@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 
@@ -62,16 +63,13 @@ namespace HotelReservationSystem.Controllers
             Thread.SpinWait(int.MaxValue / 50);
         }
 
-        private string getRandomString(int string_length)
+        private static Random random = new Random();
+
+        private static string getRandomString(int length)
         {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                var bit_count = (string_length * 6);
-                var byte_count = ((bit_count + 7) / 8); // rounded up
-                var bytes = new byte[byte_count];
-                rng.GetBytes(bytes);
-                return Convert.ToBase64String(bytes);
-            }
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }
